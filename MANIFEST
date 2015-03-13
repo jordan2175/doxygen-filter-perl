@@ -1,0 +1,12 @@
+Changes
+Doxyfile
+HISTORY
+LICENSE
+Makefile.PL
+MANIFEST
+README
+bin/doxygen-filter-perl
+lib/Doxygen/Filter.pm
+lib/Doxygen/Filter/Perl.pm
+lib/Doxygen/Filter/Perl/POD.pm
+t/version.t

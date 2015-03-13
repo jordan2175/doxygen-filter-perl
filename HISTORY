@@ -1,0 +1,26 @@
+I started this project as I wanted to use the same documentation process for my
+Perl code as I do for all the other code I write.  Obviously the Perl "way" of 
+documenting is to use POD, and while POD is great for small Perl projects in 
+general, it does not in my opinion, provide a good tool for documenting large 
+interconnected projects and frameworks.
+
+Doxygen does not currently support Perl natively so the only way to get Doxygen
+to support Perl is to pre-filter the Perl code and Perl comments in to a format
+that Doxygen can handle. This requires reading and parsing through the code and
+creating Java-Doc or C/C++ style comments out of the code.
+
+This project (Doxygen::Filter::Perl) represents completely new code based on the 
+original work from the project DoxyGen::Filter written by Bart Schuller of Phinex 
+Informatik AG and Thomas Aeby of Phinex Informatik AG. While this is all new code,
+credit for the concept and idea needs to go to Bart and Thomas. It is also important
+to note that I am taking over the DoxyGen::Filter project and further work of that
+code by permission from Thomas Aeby.
+
+A lot of users have contributed code and code ideas to this project and we welcome
+all future ideas and code submissions. One of the largest contributors of ideas 
+and code comes from Kieron Taylor of the The European Bioinformatics Institute and 
+Genome Research Limited.
+
+Special thanks goes to Zbynek Vyskovsky for the many patches, ideas, and features
+to help make this project more complete and allow developers to take advantage of
+nearlly all of the doxygen commands.

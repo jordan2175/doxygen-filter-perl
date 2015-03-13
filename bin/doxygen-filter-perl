@@ -1,0 +1,79 @@
+#!/usr/bin/perl
+#
+#####################################################################
+# This program is not guaranteed to work at all, and by using this  #
+# program you release the author of any and all liability.          #
+#                                                                   #
+# You may use this code as long as you are in compliance with the   #
+# license (see the LICENSE file) and this notice, disclaimer and    #
+# comment box remain intact and unchanged.                          #
+#                                                                   #
+# Script:      doxygen-filter-perl                                  #
+# Description: pre-filter script for doxygen                        #
+#                                                                   #
+# Written by:  Bret Jordan (jordan at open1x littledot org)         #
+# Created:     2011-10-21                                           #
+##################################################################### 
+#
+#
+#
+#
+use 5.8.8;
+use strict;
+use warnings;
+use Doxygen::Filter::Perl;
+use Log::Log4perl;
+
+
+our $VERSION     = '1.50';
+$VERSION = eval $VERSION;
+
+
+
+# You can not have any debugging turned on if you send the data through 
+# doxygen as it will mess up the output.  So before you run "doxygen Doxyfile"
+# make sure you have turned off all of the debugging.  This is really only
+# here so you can run "doxygen-filter-perl lib/some/path/to/a/perl.pm" and get
+# debugging output
+my %hDebugConfig = (
+    'log4perl.oneMessagePerAppender'        => 1,
+    'log4perl.rootlogger'                   => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_ChangeState'                           => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_ProcessDoxygenCommentBlock'            => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_ProcessPodCommentBlock'                => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_ProcessPerlMethod'                     => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_ConvertPodFormattingToDoxygenFormat'   => 'FATAL, SCREEN',
+    'log4perl.logger.Doxygen::Filter::Perl::_RemovePerlCommentFlags'                => 'FATAL, SCREEN',
+    'log4perl.appender.SCREEN'              => 'Log::Log4perl::Appender::Screen',
+    'log4perl.appender.SCREEN.stderr'       => 0,
+    'log4perl.appender.SCREEN.Threshold'    => 'DEBUG',
+    'log4perl.appender.SCREEN.layout'       => 'Log::Log4perl::Layout::PatternLayout',
+    'log4perl.appender.SCREEN.layout.ConversionPattern' => '%-5p %L %M{1}() - %m%n',
+);
+
+Log::Log4perl::init(\%hDebugConfig);
+
+
+# Lets grab the file name that passed in to the script
+my $sFilename = $ARGV[0];
+
+unless (-r $sFilename) { die "This file is not readable\n"; }
+
+$sFilename =~ /\.([a-zA-Z]{1,4})$/;
+my $sFileExtention = lc($1);
+
+my $filter;
+if ( $sFileExtention eq 'pm' || $sFileExtention eq 'pl') 
+{
+    $filter = new Doxygen::Filter::Perl();
+    $filter->ReadFile($sFilename);
+    $filter->ProcessFile();
+    $filter->PrintAll();
+}
+
+# Used for debugging
+#use Data::Dumper;
+#$Data::Dumper::Indent = 1;
+#print Dumper($filter->{'_hData'});
+
+

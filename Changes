@@ -1,0 +1,118 @@
+Release Notes:
+v1.62 - 2014-02-04
+    Changes
+        Zbynek Vyskovsky submitted a patch to fix the following issues and add the 
+        following functionality:
+        Fix issue with white spaces and empty lines in comments
+        Added more flexibility regarding the types of attributes. Now it's not only 
+            possible to specify variable type as scalar, hash or array, but in general 
+            any type like void, int or in package::Class format. The same applies for 
+            methods where it's now possible to specify return type of the method in 
+            similar way.
+        Added error reporting in case of incorrect syntax
+        Removed dependency for the ~~ operator
+        Attributes and methods now understand static and const keyword and passes them 
+            to doxygen. For global variables it automatically adds static.
+        Order of methods/functions is now kept and left up to doxygen to reorganize 
+            the order if needed.
+        @fn/@function now stands for static function and it's automatically added, 
+            @method is always instance method (unless explicitly mentioning static).
+v1.61 - 2013-09-23
+    Changes
+        Zbynek Vyskovsky submitted a patch to fix the following issues:
+        for top level classes (main especially) the generated class name was empty
+        @var were processed but not printed to the output
+v1.60 - 2013-08-14
+    Changes
+        Zbynek Vyskovsky submitted a patch to fix the following issues:
+        Sometimes the annotations were not processed at all, sometimes there were 
+            unexpected "main" classes.
+        Additionally the processing of inheritance was hardcoded to always include 
+            parent package instead of checking for presence of @ISA variable or "base" module.
+        There were also several problems caused misunderstanding of generated code by 
+            doxygen as there is no equivalent of some perl packages constructs in C++.
+v1.50 - 2012-07-06
+    Changes
+        Fixed issue with last commit generating a class when it should not. Patch
+            was submitted by Yuri D'Elia - SVN ID 84
+        Added support to capture locally defined variables/arrays/hashes and print 
+            them out in Doxygen format.  Patch submitted by Yuri D'Elia - SVN ID 85
+        Added support for single in-line doxygen comments based on patch from Yuri D'Elia
+        Increased the version number to remove confusion about older no longer supported
+            versions of Perl filters for Doxygen 
+v1.02 - 2012-04-13
+    Changes
+        Fixed issue where we would define a parent class when there was not one.  This
+        patch was submitted by Yuri D'Elia
+        
+v1.01 - 2012-01-18
+    Changes
+        Fixed issue where perl scripts were not getting documented correctly
+
+v1.00 - GA Release (2011-12-22)
+    Changes
+        Added some code documentation and performed some minor code cleanup
+
+v0.99_24 - Release Candidate 4 (2011-12-21)
+    Changes
+        Fixed more issues with counting subroutines
+        Fixed issue where doxygen section comment blocks were not showing up right
+
+v0.99_23 - Release Candidate 3 (2011-12-19)
+    Changes
+        Fixed issue where comments were getting stripped accidentally when found in pattern match
+
+v0.99_22 - Release Candidate 2 (2011-12-19)
+    Changes
+        Fixed issue where POD comments with special Doxygen characters caused problems
+        Fixed issue where POD multi-word section headers did not print correctly
+        Fixed issue with subroutine processing
+
+v0.99_21 - Release Candidate 1 (2011-12-13)
+    Changes
+        Fixed some issues with supporting POD
+        Did some code cleanup
+
+v0.99_11 - Beta Release 1 (unreleased)
+    New Features
+        Added basic support for POD
+
+v0.99_03 - Alpha Release 3 (unreleased)
+    Changes
+        Fixed issues with VERSION harvesting, short filenames, windows paths, spacing around
+            method and function names etc.  Thanks to Hoppfrosch (hoppfrosch at gmx littledot de)
+            for the patch and suggestions
+        Cleaned up state machine and added ability to keep track or previous states
+        Integrated Log4perl debugging
+    New Features
+        Started adding support for POD processing
+        
+v0.99_02 - Alpha Release 2 (2011-10-25)
+    Changes
+        Lots of code clean up
+        Added support for the following structural indicators
+            @class
+            @section
+            @subsection
+            General comments with a @brief
+        Fixed the output so that additional comments like @section blocks show up 
+            correctly and in the right place.
+            
+v0.99_01 - Initial Alpha Release (2011-10-21)
+    Differences from DoxyGenFilter
+        This represents a complete rewrite of the code and attempts to provide 
+        a frame work from which we can greatly expand the functionality over time.
+        We also build up a document object of the code that allows us to pull things
+        in from various places and relate them all correctly. 
+    New Features
+        We current support the following doxygen structural indicators
+            @file
+            @fn (@function and @method)
+        All section indicators should work under each structural indicators that we support
+        Verbatim formatting keeps comment "#" tags
+        We use the VERSION variable from the code in the file output definition
+        The @method and @function documentation blocks can reside inside or outside
+            the actual subroutines that they are tied to.
+    Known Issues
+        POD support is not yet included
+        Only two structural indicators are currently supported - more to com
