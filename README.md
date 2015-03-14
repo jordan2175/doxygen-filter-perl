@@ -1,9 +1,19 @@
 # Doxygen::Filter::Perl #
 
-## Hosted At ##
+
+Doxygen::Filter::Perl is Copyright (C) 2011, Bret Jordan
+========================================================
+HOSTED AT
     http://github.com/jordan2175/doxygen-filter-perl
 
-## Installation ##
+
+MAJOR FEATURES
+    The major features of Doxygen::Filter::Perl are as follows:
+        Support for Doxygen style comments in Perl
+        Ability to convert POD comments in to Doxygen format
+
+
+INSTALLATION
     To install this module type the following:
     perl Makefile.PL
     make
@@ -15,14 +25,8 @@
         PROJECT_NAME
         PROJECT_NUMBER
 
-## Major Features ##
 
-The major features of Doxygen::Filter::Perl are as follows:
-- Support for Doxygen style comments in Perl
-- Ability to convert POD comments in to Doxygen format
-
-## DEPENDENCIES ##
-
+DEPENDENCIES
     This module requires these other modules and libraries:
     Pod::POM (0.27)                 [License = Perl]
     Pod::POM::View::HTML (1.06)     [License = Perl]
@@ -31,14 +35,17 @@ The major features of Doxygen::Filter::Perl are as follows:
     Test::Output (1.01)             [License = Perl]
     IO::Handle
 
-## Contributing ##
 
-Contributions welcome! Please fork the repository and open a pull request with your changes or send me a diff patch file.
+NOTES
 
-## License ##
 
-This is free software, licensed under the Apache License, Version 2.0.
+LICENCE INFORMATION
+    See the LICENSE file included with this package for license details. 
 
-## Copyright ##
 
-Copyright 2015 Bret Jordan, All rights reserved.
+AUTHOR
+    Bret Jordan, jordan at open1x littledot org, jordan2175 at gmail littledot com
+
+
+COPYRIGHT
+    Copyright (C) 2011 by Bret Jordan all rights reserved

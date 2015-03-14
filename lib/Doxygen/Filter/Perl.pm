@@ -984,7 +984,7 @@ sub _RemovePerlCommentFlags
         { 
             $logger->debug("Found verbatim command");
             # We need to remove the comment marker from the '# @verbaim' line now since it will not be caught later
-            $line =~ s/^\s*#\s*//;
+            $line =~ s/^\s*#\s*/ /;
             $iInVerbatimBlock = 1;
         }
         elsif ($line =~ /^\s*#\s*\@endverbatim/)
