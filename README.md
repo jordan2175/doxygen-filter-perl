@@ -28,15 +28,16 @@
 ## DEPENDENCIES ##
 
     This module requires these other modules and libraries:
-    Pod::POM (0.27)                 [License = Perl]
+    Pod::POM (0.29)                 [License = Perl]
     Pod::POM::View::HTML (1.06)     [License = Perl]
-    Log:Log4perl (1.33)             [License = Perl]
-    Test::More (0.98)               [License = Perl]
-    Test::Output (1.01)             [License = Perl]
-    IO::Handle
+    Log::Log4perl (1.46)            [License = Perl]
+    Test::More (1.001014)           [License = Perl]
+    Test::Output (1.03)             [License = Perl]
+    IO::Handle (1.34)
 
 ## LICENCE INFORMATION ##
 
+This is free software, licensed under the Apache License, Version 2.0.
 See the LICENSE file included with this package for license details. 
 
 
