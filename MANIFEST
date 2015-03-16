@@ -4,7 +4,7 @@ HISTORY
 LICENSE
 Makefile.PL
 MANIFEST
-README
+README.md
 bin/doxygen-filter-perl
 lib/Doxygen/Filter.pm
 lib/Doxygen/Filter/Perl.pm
