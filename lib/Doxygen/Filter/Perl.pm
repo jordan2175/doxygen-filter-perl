@@ -31,7 +31,7 @@ use Pod::POM;
 use IO::Handle;
 use Doxygen::Filter::Perl::POD;
 
-our $VERSION     = '1.63';
+our $VERSION     = '1.70';
 $VERSION = eval $VERSION;
 
 
@@ -685,7 +685,9 @@ sub _ProcessPerlMethod
     $logger->debug("Cleanline: $cleanline");
     
     # Remove any comments even those inline with code but not if the hash mark "#" is in a pattern match 
-    unless ($cleanline =~ /=~/) { $cleanline =~ s/#.*$//; }
+    # unless ($cleanline =~ /=~/) { $cleanline =~ s/#.*$//; }
+    # Patch from Stefan Tauner to address hash marks showing up at the last element of an array, $#array
+    unless ($cleanline =~ /=~/) { $cleanline =~ s/([^\$])#.*$/$1/; }
     $logger->debug("Cleanline: $cleanline");
     # Need to remove braces from counting when they are in a pattern match but not when they are supposed to be 
     # there as in the second use case listed below.  Below the use cases is some ideas on how to do this.
@@ -997,10 +999,13 @@ sub _RemovePerlCommentFlags
         # Lets remove any doxygen command terminators
         $line =~ s/^\s*#\*\s*//;
         # Lets remove all of the Perl comment markers so long as we are not in a verbatim block
-        if ($iInVerbatimBlock == 0) { $line =~ s/^\s*#+//; }
-
+        # if ($iInVerbatimBlock == 0) { $line =~ s/^\s*#+//; }
+        # Patch from Sebastian Rose to address spacing and indentation in code examples
+        if ($iInVerbatimBlock == 0) { $line =~ s/^\s*#\s?//; }
         $logger->debug("code: $line");
-        $sBlockDetails .= $line;
+        # Patch from Mihai MOJE to address method comments all on the same line.
+        $sBlockDetails .= $line . "<br>";
+        #$sBlockDetails .= $line;
     }
     $sBlockDetails =~ s/^([ \t]*\n)+//s;
     chomp($sBlockDetails);

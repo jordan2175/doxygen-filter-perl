@@ -1,4 +1,12 @@
 Release Notes:
+v1.70 - 2015-03-16
+    Changes
+        Moved repo from sourceforge to github at https://github.com/jordan2175/doxygen-filter-perl
+        Converted to an Apache 2 license
+        Updated Doxyfile to work with latest version of Doxygen, 1.8.9.1
+        Stefan Tauner to address hash marks showing up at the last element of an array, $#array
+        Patch from Sebastian Rose to address spacing and indentation in code examples
+        Patch from Mihai MOJE to address method comments all on the same line.
 v1.62 - 2014-02-04
     Changes
         Zbynek Vyskovsky submitted a patch to fix the following issues and add the 

@@ -27,7 +27,7 @@ use strict;
 use warnings;
 use Log::Log4perl;
 
-our $VERSION     = '1.50';
+our $VERSION     = '1.70';
 $VERSION = eval $VERSION;
 
 
