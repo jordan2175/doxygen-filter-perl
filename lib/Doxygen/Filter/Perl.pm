@@ -18,7 +18,7 @@
 # @endverbatim
 #
 # @copy 2011, Bret Jordan (jordan2175@gmail.com, jordan@open1x.org)
-# $Id: Perl.pm 93 2014-03-17 13:08:02Z jordan2175 $
+# $Id: Perl.pm 93 2015-03-17 13:08:02Z jordan2175 $
 #*
 package Doxygen::Filter::Perl;
 
@@ -31,7 +31,7 @@ use Pod::POM;
 use IO::Handle;
 use Doxygen::Filter::Perl::POD;
 
-our $VERSION     = '1.70';
+our $VERSION     = '1.71';
 $VERSION = eval $VERSION;
 
 
@@ -425,6 +425,9 @@ sub PrintAll
         }
         
         # Print all functions/methods in order of appearance, let doxygen take care of grouping them according to modifiers
+        # I added this print public line to make sure the functions print if one of
+        # the previous elements was a my $a = 1 and thus had a print "private:"
+        print("public:\n");
         foreach my $methodName (@{$self->{'_hData'}->{'class'}->{$class}->{'subroutineorder'}})
         {
             $self->_PrintMethodBlock($class, $methodName);
@@ -1032,7 +1035,10 @@ sub _ConvertToOfficialDoxygenSyntax
     $logger->debug("### Entering _ConvertToOfficialDoxygenSyntax ###");
 
     # This will match "## @command" and convert it to "#** @command"
-    if ($line =~ /^\s*##\s+\@/) { $line =~ s/^(\s*)##(\s+\@)/$1#\*\*$2/; } 
+    if ($line =~ /^\s*##\s+\@/) { $line =~ s/^(\s*)##(\s+\@)/$1#\*\*$2/; }
+    else {
+        $logger->debug('Nothing to do, did not find any ## @');
+    } 
     return $line;
 }
 
@@ -1266,7 +1272,7 @@ Bret Jordan <jordan at open1x littledot org> or <jordan2175 at gmail littledot c
 
 =head1 LICENSE
 
-Doxygen::Filter::Perl is dual licensed GPLv3 and Commerical. See the LICENSE
+Doxygen::Filter::Perl is licensed with an Apache 2 license. See the LICENSE
 file for more details.
 
 =cut

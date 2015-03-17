@@ -28,7 +28,7 @@ use warnings;
 use parent qw(Pod::POM::View::HTML);
 use Log::Log4perl;
 
-our $VERSION     = '1.70';
+our $VERSION     = '1.71';
 $VERSION = eval $VERSION;
 
 
