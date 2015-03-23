@@ -1,4 +1,10 @@
 Release Notes:
+v1.72 - 2015-03-23
+    Changes
+        Un-did change from 1.71 and fixed it correctly by changing the Doxyfile
+v1.71 - 2015-03-16
+    Chnaged
+        Fix issue where public objects were not showing up, if a private objects was found 
 v1.70 - 2015-03-16
     Changes
         Moved repo from sourceforge to github at https://github.com/jordan2175/doxygen-filter-perl

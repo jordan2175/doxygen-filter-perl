@@ -31,7 +31,7 @@ use Pod::POM;
 use IO::Handle;
 use Doxygen::Filter::Perl::POD;
 
-our $VERSION     = '1.71';
+our $VERSION     = '1.72';
 $VERSION = eval $VERSION;
 
 
@@ -427,7 +427,8 @@ sub PrintAll
         # Print all functions/methods in order of appearance, let doxygen take care of grouping them according to modifiers
         # I added this print public line to make sure the functions print if one of
         # the previous elements was a my $a = 1 and thus had a print "private:"
-        print("public:\n");
+        # This is no longer needed, fixed it in the Doxyfile instead.
+        # print("public:\n");
         foreach my $methodName (@{$self->{'_hData'}->{'class'}->{$class}->{'subroutineorder'}})
         {
             $self->_PrintMethodBlock($class, $methodName);
