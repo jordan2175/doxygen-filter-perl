@@ -84,11 +84,6 @@ is here.
 
 Bret Jordan <jordan at open1x littledot org> or <jordan2175 at gmail littledot com>
 
-=head1 LICENSE
-
-Doxygen::Filter::Perl::POD is dual licensed GPLv3 and Commerical. See the LICENSE
-file for more details.
-
 =cut
 
 return 1;
