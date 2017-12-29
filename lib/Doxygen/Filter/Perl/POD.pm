@@ -86,8 +86,8 @@ Bret Jordan <jordan at open1x littledot org> or <jordan2175 at gmail littledot c
 
 =head1 LICENSE
 
-Doxygen::Filter::Perl::POD is dual licensed GPLv3 and Commerical. See the LICENSE
-file for more details.
+This is free software, licensed under the Apache License, Version 2.0.
+See the LICENSE file included with this package for license details. 
 
 =cut
 
