@@ -822,6 +822,13 @@ sub _ProcessDoxygenCommentBlock
     $sCommandLine =~ /^\s*#\*\*\s+\@([\w:]+)\s+(.*)/;
     my $sCommand = lc($1);
     my $sOptions = $2; 
+    if (!defined($sOptions))
+    {
+      # Lets check special case with a '.' or ',' e.g @winchhooks.
+      $sCommandLine =~ /^\s*#\*\*\s+\@([\w:]+)([\.,].*)/;
+      $sCommand = lc($1);
+      $sOptions = "$2";
+    }
     $logger->debug("Command: $sCommand");
     $logger->debug("Options: $sOptions");
 
