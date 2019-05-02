@@ -521,7 +521,7 @@ sub _PrintFilenameBlock
     
     if (defined $self->{'_hData'}->{'filename'}->{'fullpath'})
     {
-        print "/** \@file $self->{'_hData'}->{'filename'}->{'fullpath'}\n";
+        print "/** \@file \"$self->{'_hData'}->{'filename'}->{'fullpath'}\"\n";
         if (defined $self->{'_hData'}->{'filename'}->{'details'}) { print "$self->{'_hData'}->{'filename'}->{'details'}\n"; }
         if (defined $self->{'_hData'}->{'filename'}->{'version'}) { print "\@version $self->{'_hData'}->{'filename'}->{'version'}\n"; }
         print "*/\n";        
