@@ -286,8 +286,12 @@ sub ProcessFile
                     {
                         if ($sIncludeModule eq "base")
                         {
-                            my @isa = eval($expr);
-                            push(@{$self->GetCurrentClass()->{inherits}}, _FilterOutSystemPackages(@isa)) unless ($@);
+                            if (substr($expr,0,8) =~ /\"require/) { }
+                            else
+                            {
+                                my @isa = eval($expr);
+                                push(@{$self->GetCurrentClass()->{inherits}}, _FilterOutSystemPackages(@isa)) unless ($@);
+                            }
                         }
                         else
                         {
@@ -444,7 +448,12 @@ sub PrintAll
 # ----------------------------------------
 # Private Methods
 # ----------------------------------------
-sub _FilterOutSystemPackages { return grep({ !exists $SYSTEM_PACKAGES{$_} } @_); }
+sub _FilterOutSystemPackages
+{
+   if (!defined($_)) { return @_};
+   return grep({ !exists $SYSTEM_PACKAGES{$_} } @_);
+}
+
 
 sub _SwitchClass 
 { 
