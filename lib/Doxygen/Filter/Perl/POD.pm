@@ -30,7 +30,43 @@ use Log::Log4perl;
 
 our $VERSION     = '1.72';
 $VERSION = eval $VERSION;
+our $labelCnt = 0;  # label counter to see to it that when e.g. twice a =head1 NAME in a file it is still an unique label
+our $sectionLabel = 'x';
 
+sub setAsLabel
+{
+    # based on e.g. a file name try to create a doxygen label prefix
+    my $self = shift;
+    $sectionLabel = shift;
+    $sectionLabel =~ s/_/__/g;
+    $sectionLabel =~ s/:/_1/g;
+    $sectionLabel =~ s/\//_2/g;
+    $sectionLabel =~ s/</_3/g;
+    $sectionLabel =~ s/>/_4/g;
+    $sectionLabel =~ s/\*/_5/g;
+    $sectionLabel =~ s/&/_6/g;
+    $sectionLabel =~ s/\|/_7/g;
+    $sectionLabel =~ s/\./_8/g;
+    $sectionLabel =~ s/!/_9/g;
+    $sectionLabel =~ s/,/_00/g;
+    $sectionLabel =~ s/ /_01/g;
+    $sectionLabel =~ s/{/_02/g;
+    $sectionLabel =~ s/}/_03/g;
+    $sectionLabel =~ s/\?/_04/g;
+    $sectionLabel =~ s/\^/_05/g;
+    $sectionLabel =~ s/%/_06/g;
+    $sectionLabel =~ s/\(/_07/g;
+    $sectionLabel =~ s/\)/_08/g;
+    $sectionLabel =~ s/\+/_09/g;
+    $sectionLabel =~ s/=/_0A/g;
+    $sectionLabel =~ s/\$/_0B/g;
+    $sectionLabel =~ s/\\/_0C/g;
+    $sectionLabel =~ s/@/_0D/g;
+    $sectionLabel =~ s/-/_0E/g;
+    $sectionLabel =~ s/[^a-z0-9A-Z]/_/g;
+
+    $sectionLabel = "x$sectionLabel"; # label should not start with a underscore
+}
 
 sub view_pod 
 {
@@ -44,7 +80,8 @@ sub view_head1
     my $title = $head1->title->present($self);
     my $name = $title;
     $name =~ s/\s/_/g;
-    return "\n\@section $name $title\n" . $head1->content->present($self);
+    $labelCnt += 1;
+    return "\n\@section $sectionLabel$name$labelCnt $title\n" . $head1->content->present($self);
 }
 
 sub view_head2 
@@ -53,7 +90,28 @@ sub view_head2
     my $title = $head2->title->present($self);
     my $name = $title;
     $name =~ s/\s/_/g;    
-    return "\n\@subsection $name $title\n" . $head2->content->present($self);
+    $labelCnt += 1;
+    return "\n\@subsection $sectionLabel$name$labelCnt $title\n" . $head2->content->present($self);
+}
+
+sub view_head3
+{
+    my ($self, $head3) = @_;
+    my $title = $head3->title->present($self);
+    my $name = $title;
+    $name =~ s/\s/_/g;    
+    $labelCnt += 1;
+    return "\n\@subsubsection $sectionLabel$name$labelCnt $title\n" . $head3->content->present($self);
+}
+
+sub view_head4 
+{
+    my ($self, $head4) = @_;
+    my $title = $head4->title->present($self);
+    my $name = $title;
+    $name =~ s/\s/_/g;    
+    $labelCnt += 1;
+    return "\n\@paragraph $sectionLabel$name$labelCnt $title\n" . $head4->content->present($self);
 }
 
 sub view_seq_code 
