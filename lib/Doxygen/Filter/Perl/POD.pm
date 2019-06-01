@@ -33,39 +33,46 @@ $VERSION = eval $VERSION;
 our $labelCnt = 0;  # label counter to see to it that when e.g. twice a =head1 NAME in a file it is still an unique label
 our $sectionLabel = 'x';
 
+sub convertText
+{
+    # based on e.g. a file name try to create a doxygen label prefix
+    my $label = shift;
+    $label =~ s/_/__/g;
+    $label =~ s/:/_1/g;
+    $label =~ s/\//_2/g;
+    $label =~ s/</_3/g;
+    $label =~ s/>/_4/g;
+    $label =~ s/\*/_5/g;
+    $label =~ s/&/_6/g;
+    $label =~ s/\|/_7/g;
+    $label =~ s/\./_8/g;
+    $label =~ s/!/_9/g;
+    $label =~ s/,/_00/g;
+    $label =~ s/ /_01/g;
+    $label =~ s/{/_02/g;
+    $label =~ s/}/_03/g;
+    $label =~ s/\?/_04/g;
+    $label =~ s/\^/_05/g;
+    $label =~ s/%/_06/g;
+    $label =~ s/\(/_07/g;
+    $label =~ s/\)/_08/g;
+    $label =~ s/\+/_09/g;
+    $label =~ s/=/_0A/g;
+    $label =~ s/\$/_0B/g;
+    $label =~ s/\\/_0C/g;
+    $label =~ s/@/_0D/g;
+    $label =~ s/-/_0E/g;
+    $label =~ s/[^a-z0-9A-Z]/_/g;
+    print("New $label\n");
+
+    $label = "x$label"; # label should not start with a underscore
+}
 sub setAsLabel
 {
     # based on e.g. a file name try to create a doxygen label prefix
     my $self = shift;
-    $sectionLabel = shift;
-    $sectionLabel =~ s/_/__/g;
-    $sectionLabel =~ s/:/_1/g;
-    $sectionLabel =~ s/\//_2/g;
-    $sectionLabel =~ s/</_3/g;
-    $sectionLabel =~ s/>/_4/g;
-    $sectionLabel =~ s/\*/_5/g;
-    $sectionLabel =~ s/&/_6/g;
-    $sectionLabel =~ s/\|/_7/g;
-    $sectionLabel =~ s/\./_8/g;
-    $sectionLabel =~ s/!/_9/g;
-    $sectionLabel =~ s/,/_00/g;
-    $sectionLabel =~ s/ /_01/g;
-    $sectionLabel =~ s/{/_02/g;
-    $sectionLabel =~ s/}/_03/g;
-    $sectionLabel =~ s/\?/_04/g;
-    $sectionLabel =~ s/\^/_05/g;
-    $sectionLabel =~ s/%/_06/g;
-    $sectionLabel =~ s/\(/_07/g;
-    $sectionLabel =~ s/\)/_08/g;
-    $sectionLabel =~ s/\+/_09/g;
-    $sectionLabel =~ s/=/_0A/g;
-    $sectionLabel =~ s/\$/_0B/g;
-    $sectionLabel =~ s/\\/_0C/g;
-    $sectionLabel =~ s/@/_0D/g;
-    $sectionLabel =~ s/-/_0E/g;
-    $sectionLabel =~ s/[^a-z0-9A-Z]/_/g;
-
-    $sectionLabel = "x$sectionLabel"; # label should not start with a underscore
+    my $tmpLabel = shift;
+    $sectionLabel = convertText($tmpLabel);
 }
 
 sub view_pod 
@@ -78,8 +85,7 @@ sub view_head1
 {
     my ($self, $head1) = @_;
     my $title = $head1->title->present($self);
-    my $name = $title;
-    $name =~ s/\s/_/g;
+    my $name = convertText($title);
     $labelCnt += 1;
     return "\n\@section $sectionLabel$name$labelCnt $title\n" . $head1->content->present($self);
 }
@@ -88,8 +94,7 @@ sub view_head2
 {
     my ($self, $head2) = @_;
     my $title = $head2->title->present($self);
-    my $name = $title;
-    $name =~ s/\s/_/g;    
+    my $name = convertText($title);
     $labelCnt += 1;
     return "\n\@subsection $sectionLabel$name$labelCnt $title\n" . $head2->content->present($self);
 }
@@ -98,8 +103,7 @@ sub view_head3
 {
     my ($self, $head3) = @_;
     my $title = $head3->title->present($self);
-    my $name = $title;
-    $name =~ s/\s/_/g;    
+    my $name = convertText($title);
     $labelCnt += 1;
     return "\n\@subsubsection $sectionLabel$name$labelCnt $title\n" . $head3->content->present($self);
 }
@@ -108,8 +112,7 @@ sub view_head4
 {
     my ($self, $head4) = @_;
     my $title = $head4->title->present($self);
-    my $name = $title;
-    $name =~ s/\s/_/g;    
+    my $name = convertText($title);
     $labelCnt += 1;
     return "\n\@paragraph $sectionLabel$name$labelCnt $title\n" . $head4->content->present($self);
 }
