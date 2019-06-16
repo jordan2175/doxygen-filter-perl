@@ -625,9 +625,9 @@ sub _PrintMethodBlock
     if (defined $comments) { print "$comments\n"; }
 
     # Print collapsible source code block   
-    print "\@htmlonly\n";
+    print "\@htmlonly[block]\n";
     print "<div id='codesection-$method' class='dynheader closed' style='cursor:pointer;' onclick='return toggleVisibility(this)'>\n";
-    print "\t<img id='codesection-$method-trigger' src='closed.png' style='display:inline'><b>Code:</b>\n";
+    print "\t<img id='codesection-$method-trigger' src='closed.png' alt='open/close icon' style='display:inline'/a> <b>Code:</b>\n";
     print "</div>\n";
     print "<div id='codesection-$method-summary' class='dyncontent' style='display:block;font-size:small;'>click to view</div>\n";
     print "<div id='codesection-$method-content' class='dyncontent' style='display: none;'>\n";
@@ -636,7 +636,7 @@ sub _PrintMethodBlock
     print "\@code\n";
     print "\# Number of lines of code in $method: $methodDef->{'length'}\n";
     print "$methodDef->{'code'}\n";
-    print "\@endcode \@htmlonly\n";
+    print "\@endcode \@htmlonly[block]\n";
     print "</div>\n";
     print "\@endhtmlonly */\n";
 
