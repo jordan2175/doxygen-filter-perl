@@ -593,7 +593,11 @@ sub _PrintClassBlock
         my $count = 0;
         foreach my $inherit (@{$classDef->{inherits}})
         {
-            print(($count++ == 0 ? ": " : ", ")." public ::".$inherit);
+            if (defined($inherit))
+            {
+                print(($count++ == 0 ? ": " : ", ")." public ::".$inherit);
+            }
+
         }
     }
     print "\n{\n";
