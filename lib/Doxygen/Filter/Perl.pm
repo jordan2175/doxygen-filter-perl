@@ -805,6 +805,7 @@ sub _ProcessPodCommentBlock
 
     my $parser = new Pod::POM();
     my $pom = $parser->parse_text($sPodRawText);
+    Doxygen::Filter::Perl::POD->setAsLabel($self->{'_hData'}->{'filename'}->{'fullpath'});
     my $sPodParsedText = Doxygen::Filter::Perl::POD->print($pom);
 
     $self->{'_hData'}->{'class'}->{$sClassName}->{'comments'} .= $sPodParsedText;
