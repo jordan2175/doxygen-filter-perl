@@ -673,6 +673,8 @@ sub _ProcessPerlMethod
         push (@{$self->{'_hData'}->{'class'}->{$sClassName}->{'subroutineorder'}}, $sName); 
         $self->{'_sCurrentMethodName'} = $sName; 
     }
+    if (!defined($self->{'_sCurrentMethodName'})) {$self->{'_sCurrentMethodName'}='';}
+
     my $sMethodName = $self->{'_sCurrentMethodName'};
     
     # Lets find out if this is a public or private method/function based on a naming standard
