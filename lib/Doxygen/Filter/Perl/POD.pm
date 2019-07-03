@@ -32,6 +32,7 @@ our $VERSION     = '1.72';
 $VERSION = eval $VERSION;
 our $labelCnt = 0;  # label counter to see to it that when e.g. twice a =head1 NAME in a file it is still an unique label
 our $sectionLabel = 'x';
+my @OVER;
 
 sub convertText
 {
@@ -124,6 +125,76 @@ sub view_seq_code
 }
 
 
+# one to one copy of the HTML version, we need the @OVER
+sub view_over {
+    my ($self, $over) = @_;
+    my ($start, $end, $strip);
+    my $items = $over->item();
+
+    if (@$items) {
+
+	my $first_title = $items->[0]->title();
+
+	if ($first_title =~ /^\s*\*\s*/) {
+	    # '=item *' => <ul>
+	    $start = "<ul>\n";
+	    $end   = "</ul>\n";
+	    $strip = qr/^\s*\*\s*/;
+	}
+	elsif ($first_title =~ /^\s*\d+\.?\s*/) {
+	    # '=item 1.' or '=item 1 ' => <ol>
+	    $start = "<ol>\n";
+	    $end   = "</ol>\n";
+	    $strip = qr/^\s*\d+\.?\s*/;
+	}
+	else {
+	    $start = "<ul>\n";
+	    $end   = "</ul>\n";
+	    $strip = '';
+	}
+
+	my $overstack = ref $self ? $self->{ OVER } : \@OVER;
+	push(@$overstack, $strip);
+	my $content = $over->content->present($self);
+	pop(@$overstack);
+    
+	return $start
+	    . $content
+	    . $end;
+    }
+    else {
+	return "<blockquote>\n"
+	    . $over->content->present($self)
+	    . "</blockquote>\n";
+    }
+}
+
+
+# copy of the HTML version, where */ is replaced by \*\/
+sub view_item {
+    my ($self, $item) = @_;
+
+    my $over  = ref $self ? $self->{ OVER } : \@OVER;
+    my $title = $item->title();
+    my $strip = $over->[-1];
+
+    if (defined $title) {
+        $title = $title->present($self) if ref $title;
+        $title =~ s/$strip// if $strip;
+        if (length $title) {
+            my $anchor = $title;
+            $anchor =~ s/^\s*|\s*$//g; # strip leading and closing spaces
+            $anchor =~ s/\W/_/g;
+            $title =~ s/\*\//\\*\\\//g;
+            $title = qq{<a name="item_$anchor"></a><b>$title</b>};
+        }
+    }
+
+    return '<li>'
+        . "$title\n"
+        . $item->content->present($self)
+        . "</li>\n";
+}
 
 
 =head1 NAME
