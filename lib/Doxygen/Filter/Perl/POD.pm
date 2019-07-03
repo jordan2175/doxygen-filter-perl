@@ -185,7 +185,7 @@ sub view_item {
             my $anchor = $title;
             $anchor =~ s/^\s*|\s*$//g; # strip leading and closing spaces
             $anchor =~ s/\W/_/g;
-            $title =~ s/\*\//\\*&zwj;\//g;
+            $title =~ s/\*\//*&zwj;\//g;
             $title = qq{<a name="item_$anchor"></a><b>$title</b>};
         }
     }
