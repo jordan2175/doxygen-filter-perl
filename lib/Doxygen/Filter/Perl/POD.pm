@@ -118,6 +118,26 @@ sub view_head4
 }
 
 
+sub view_seq_code
+{
+    my ($self, $text) = @_;
+    $text =~ s/"/\\"/g;
+    return "<code>$text</code>";
+}
+
+
+sub view_verbatim {
+    my ($self, $text) = @_;
+    for ($text) {
+        s/&/&amp;/g;
+        s/</&lt;/g;
+        s/>/&gt;/g;
+        s/-/\\-/g;
+    }
+    return "<pre>$text</pre>\n\n";
+}
+
+
 =head1 NAME
 
 Doxygen::Filter::Perl::POD - A perl code pre-filter for Doxygen
