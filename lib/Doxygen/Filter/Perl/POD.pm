@@ -117,14 +117,6 @@ sub view_head4
     return "\n\@paragraph $sectionLabel$name$labelCnt $title\n" . $head4->content->present($self);
 }
 
-sub view_seq_code 
-{
-    my ($self, $text) = @_;
-    return "\n\@code\n$text\n\@endcode\n";
-}
-
-
-
 
 =head1 NAME
 
