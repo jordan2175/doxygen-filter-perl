@@ -627,8 +627,23 @@ sub _PrintMethodBlock
 
     my $returntype = $methodDef->{'returntype'} || $type;
     my $parameters = $methodDef->{'parameters'} || "";
+    my $prototype = $methodDef->{'prototype'} || "";
 
-    print "/** \@fn $state $returntype $method\($parameters\)\n";
+    if ($parameters =~ /^ *$/)
+    {
+      if ($prototype =~ /^ *$/)
+      {
+        print "/** \@fn $state $returntype $method\(\)\n";
+      }
+      else
+      {
+        print "/** \@fn $state $returntype $method\($prototype\)\n";
+      }
+    }
+    else
+    {
+      print "/** \@fn $state $returntype $method\($parameters\)\n";
+    }
 
     my $details = $methodDef->{'details'};
     if (defined $details) { print "$details\n"; }
@@ -653,7 +668,21 @@ sub _PrintMethodBlock
     print "</div>\n";
     print "\@endhtmlonly */\n";
 
-    print "$state $returntype $method\($parameters\)\;\n";      
+    if ($parameters =~ /^ *$/)
+    {
+      if ($prototype =~ /^ *$/)
+      {
+        print "$state $returntype $method\(\)\;\n";      
+      }
+      else
+      {
+        print "$state $returntype $method\($prototype\)\;\n";      
+      }
+    }
+    else
+    {
+      print "$state $returntype $method\($parameters\)\;\n";      
+    }
 }
 
 sub _ProcessPerlMethod
@@ -681,14 +710,23 @@ sub _ProcessPerlMethod
         $sName =~ s/\{.*\}?//;
         # Remove any leading or trailing whitespace from the name, just to be safe
         $sName =~ s/\s//g;
+        # check if we have a prototype
+        my ($method, $proto)  = split /[()]/, $sName;
+        $sName = $method;
+        $sName =~ s/\s//g;
+        if (defined($proto)) {$proto =~ s/\s//g;}
+        my $sProtoType = $proto || "";
         $logger->debug("Method Name: $sName");
         
         push (@{$self->{'_hData'}->{'class'}->{$sClassName}->{'subroutineorder'}}, $sName); 
         $self->{'_sCurrentMethodName'} = $sName; 
+        $self->{'_sProtoType'} = $self->_ConvertParameters($sProtoType); 
     }
     if (!defined($self->{'_sCurrentMethodName'})) {$self->{'_sCurrentMethodName'}='';}
+    if (!defined($self->{'_sProtoType'})) {$self->{'_sProtoType'}='';}
 
     my $sMethodName = $self->{'_sCurrentMethodName'};
+    my $sProtoType = $self->{'_sProtoType'};
     
     # Lets find out if this is a public or private method/function based on a naming standard
     if ($sMethodName =~ /^_/) { $self->{'_sCurrentMethodState'} = 'private'; }
@@ -777,6 +815,7 @@ sub _ProcessPerlMethod
     {
         $self->{'_hData'}->{'class'}->{$sClassName}->{'subroutines'}->{$sMethodName}->{'type'} = "method";
     }
+    $self->{'_hData'}->{'class'}->{$sClassName}->{'subroutines'}->{$sMethodName}->{'prototype'} = $sProtoType;
 }
 
 sub _ProcessPodCommentBlock
@@ -1087,6 +1126,7 @@ sub _ConvertTypeCode
     $code =~ s/\@\$/array_ref/g;
     $code =~ s/\%\$/hash_ref/g;
     $code =~ s/\$/scalar/g;
+    $code =~ s/\&/subroutine/g;
     $code =~ s/\@/array/g;
     $code =~ s/\%/hash/g;
     
@@ -1109,6 +1149,7 @@ sub _ConvertParameters
     $sParameters =~ s/\@\$/array_ref /g;
     $sParameters =~ s/\%\$/hash_ref /g;
     $sParameters =~ s/\$/scalar /g;
+    $sParameters =~ s/\&/subroutine /g;
     $sParameters =~ s/\@/array /g;
     $sParameters =~ s/\%/hash /g;
     
@@ -1284,6 +1325,7 @@ documented as $$foo, @$bar, %$foobar.  An example would look this:
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'returntype'}  = string (return type)
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'state'}       = string (public / private)
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'parameters'}  = string (method / function parameters)
+    $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'prototype'}   = string (method / function prototype parameters)
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'code'}        = string
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'length'}      = integer
     $self->{'_hData'}->{'class'}->{$class}->{'subroutines'}->{$method}->{'details'}     = string
