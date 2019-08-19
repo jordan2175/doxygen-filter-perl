@@ -712,7 +712,7 @@ sub _ProcessPerlMethod
         $sName =~ s/\s//g;
         # check if we have a prototype
         my ($method, $proto)  = split /[()]/, $sName;
-        $sName = $method;
+        $sName = $method || "";
         $sName =~ s/\s//g;
         if (defined($proto)) {$proto =~ s/\s//g;}
         my $sProtoType = $proto || "";
