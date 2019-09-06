@@ -63,10 +63,18 @@ sub convertText
     $label =~ s/@/_0D/g;
     $label =~ s/-/_0E/g;
     $label =~ s/[^a-z0-9A-Z]/_/g;
-    print("New $label\n");
 
     $label = "x$label"; # label should not start with a underscore
+    return $label;
 }
+
+sub convertTitle
+{
+    my $title = shift;
+    $title =~ s/\n/ /g;
+    return $title;
+}
+
 sub setAsLabel
 {
     # based on e.g. a file name try to create a doxygen label prefix
@@ -86,6 +94,7 @@ sub view_head1
     my ($self, $head1) = @_;
     my $title = $head1->title->present($self);
     my $name = convertText($title);
+    $title = convertTitle($title);
     $labelCnt += 1;
     return "\n\@section $sectionLabel$name$labelCnt $title\n" . $head1->content->present($self);
 }
@@ -95,6 +104,7 @@ sub view_head2
     my ($self, $head2) = @_;
     my $title = $head2->title->present($self);
     my $name = convertText($title);
+    $title = convertTitle($title);
     $labelCnt += 1;
     return "\n\@subsection $sectionLabel$name$labelCnt $title\n" . $head2->content->present($self);
 }
@@ -104,6 +114,7 @@ sub view_head3
     my ($self, $head3) = @_;
     my $title = $head3->title->present($self);
     my $name = convertText($title);
+    $title = convertTitle($title);
     $labelCnt += 1;
     return "\n\@subsubsection $sectionLabel$name$labelCnt $title\n" . $head3->content->present($self);
 }
@@ -113,6 +124,7 @@ sub view_head4
     my ($self, $head4) = @_;
     my $title = $head4->title->present($self);
     my $name = convertText($title);
+    $title = convertTitle($title);
     $labelCnt += 1;
     return "\n\@paragraph $sectionLabel$name$labelCnt $title\n" . $head4->content->present($self);
 }
