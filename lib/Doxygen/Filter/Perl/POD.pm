@@ -123,6 +123,12 @@ sub view_seq_code
     return "\n\@code\n$text\n\@endcode\n";
 }
 
+sub encode {
+    my($self,$text) = @_;
+    return $text;
+}
+
+
 
 
 
