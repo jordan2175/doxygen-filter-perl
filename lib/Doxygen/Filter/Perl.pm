@@ -213,7 +213,7 @@ sub ProcessFile
         if ($self->{'_sState'} eq 'NORMAL')
         {
             $logger->debug("We are in state: NORMAL");
-            if    ($line =~ /^\s*sub\s*(.*)/) { $self->_ChangeState('METHOD');  }
+            if    ($line =~ /^\s*sub\s+([a-zA-Z_].*)/) { $self->_ChangeState('METHOD');  }
             elsif ($line =~ /^\s*#\*\*\s*\@/) { $self->_ChangeState('DOXYGEN'); }
             elsif ($line =~ /^=.*/)           { $self->_ChangeState('POD');     }
         }
@@ -240,7 +240,7 @@ sub ProcessFile
                 {
                     # If this comment block is right next to a subroutine, lets make sure we
                     # handle that condition
-                    if ($line =~ /^\s*sub\s*(.*)/) { $self->_ChangeState('METHOD');  }
+                    if ($line =~ /^\s*sub\s+([a-zA-Z_].*)/) { $self->_ChangeState('METHOD');  }
                 }
             }
         }
@@ -672,7 +672,7 @@ sub _ProcessPerlMethod
     
     my $sClassName = $self->{'_sCurrentClass'};
 
-    if ($line =~ /^\s*sub\s+(.*)/) 
+    if ($line =~ /^\s*sub\s+([a-zA-Z_].*)/)
     {
         # We should keep track of the order in which the methods were written in the code so we can print 
         # them out in the same order
