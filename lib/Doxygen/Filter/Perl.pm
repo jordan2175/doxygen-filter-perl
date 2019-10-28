@@ -1083,6 +1083,7 @@ sub _ConvertTypeCode
     $logger->debug("### Entering _ConvertParameters ###");
 
     # Lets clean up the parameters list so that it will work with Doxygen
+    $code =~ s/\*/any_type /g;
     $code =~ s/\$\$/scalar_ref/g;
     $code =~ s/\@\$/array_ref/g;
     $code =~ s/\%\$/hash_ref/g;
@@ -1105,6 +1106,7 @@ sub _ConvertParameters
     $logger->debug("### Entering _ConvertParameters ###");
 
     # Lets clean up the parameters list so that it will work with Doxygen
+    $sParameters =~ s/\*/any_type /g;
     $sParameters =~ s/\$\$/scalar_ref /g;
     $sParameters =~ s/\@\$/array_ref /g;
     $sParameters =~ s/\%\$/hash_ref /g;
