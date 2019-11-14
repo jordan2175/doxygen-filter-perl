@@ -808,6 +808,9 @@ sub _ProcessPodCommentBlock
     Doxygen::Filter::Perl::POD->setAsLabel($self->{'_hData'}->{'filename'}->{'fullpath'});
     my $sPodParsedText = Doxygen::Filter::Perl::POD->print($pom);
 
+    $sPodParsedText =~ s/\*\/\*/\\*\&zwj;\/\\*/g;
+    $sPodParsedText =~ s/\/\*/\/\&zwj;\\*/g;
+    $sPodParsedText =~ s/\*\//\\*\&zwj;\//g;
     $self->{'_hData'}->{'class'}->{$sClassName}->{'comments'} .= $sPodParsedText;
 }
 
