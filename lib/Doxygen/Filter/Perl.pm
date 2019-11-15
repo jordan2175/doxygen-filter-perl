@@ -230,7 +230,7 @@ sub ProcessFile
             {
                 # The general idea is we gather the whole doxygen comment in to an array and process
                 # that array all at once in the _ProcessDoxygenCommentBlock.  This way we do not have 
-                # to artifically keep track of what type of comment block it is between each line 
+                # to artificially keep track of what type of comment block it is between each line
                 # that we read from the file.
                 $logger->debug("End of Doxygen Comment Block");
                 $self->_ProcessDoxygenCommentBlock(); 
@@ -505,7 +505,7 @@ sub _ChangeState
     }
     else
     {
-        # If nothing is passed in, lets set the current state to the preivous state.
+        # If nothing is passed in, lets set the current state to the previous state.
         $logger->debug("No state passed in, lets revert to previous state");
         my $previous = pop @{$self->{'_sPreviousState'}};
         if (defined $previous)
@@ -611,9 +611,7 @@ sub _PrintMethodBlock
     #** @method private _PrintMethodBlock ($class, $methodDef)
     # This method will print the various subroutines/functions/methods in apprporiate doxygen syntax
     # @param class - required string (name of the class)
-    # @param state - required string (current state)
-    # @param type - required string (type)
-    # @param method - required string (name of method)
+    # @param methodDef - required string (name of method)
     #*
     my $self = shift;
     my $class = shift;
@@ -691,7 +689,7 @@ sub _ProcessPerlMethod
 {
     #** @method private _ProcessPerlMethod ($line)
     # This method will process the contents of a subroutine/function/method and try to figure out
-    # the name and wether or not it is a private or public method.  The private or public status,
+    # the name and whether or not it is a private or public method.  The private or public status,
     # if not defined in a doxygen comment block will be determined based on the file name.  As with
     # C and other languages, an "_" should be the first character for all private functions/methods.
     # @param line - required string (full line of code)
@@ -797,9 +795,9 @@ sub _ProcessPerlMethod
         $logger->debug("A subroutine has been started but we are not yet in it as we have yet to see an open brace");
     }
 
-    # Doxygen makes use of the @ symbol and treats it as a special reserved character.  This is a problem for perl
-    # and especailly when we are documenting our own Doxygen code we have print statements that include things like @endcode 
-    # as is found in _PrintMethodBlock(). Lets convert those @ to @amp; 
+    # Doxygen makes use of the `@` symbol and treats it as a special reserved character.  This is a problem for perl
+    # and especially when we are documenting our own Doxygen code we have print statements that include things likea `@endcode`
+    # as is found in _PrintMethodBlock(). Lets convert those `@` to `@amp;`
     $line =~ s/\@endcode/\&\#64\;endcode/g;
 
     # Record the current line for code output
@@ -1096,7 +1094,7 @@ sub _ConvertToOfficialDoxygenSyntax
 {
     #** @method private _ConvertToOfficialDoxygenSyntax ($line)
     # This method will check the current line for various unsupported doxygen comment blocks and convert them
-    # to the type we support, '#** @command'.  The reason for this is so that we do not need to add them in 
+    # to the type we support, #** @command.  The reason for this is so that we do not need to add them in
     # every if statement throughout the code.
     # @param line - required string (line of code)
     # @retval line - string (line of code)
@@ -1106,7 +1104,7 @@ sub _ConvertToOfficialDoxygenSyntax
     my $logger = $self->GetLogger($self);
     $logger->debug("### Entering _ConvertToOfficialDoxygenSyntax ###");
 
-    # This will match "## @command" and convert it to "#** @command"
+    # This will match ## @command and convert it to #** @command
     if ($line =~ /^\s*##\s+\@/) { $line =~ s/^(\s*)##(\s+\@)/$1#\*\*$2/; }
     else {
         $logger->debug('Nothing to do, did not find any ## @');
@@ -1226,9 +1224,9 @@ continuous "#" comment markers as a blank line can be used as a termination
 mark for the doxygen comment block.
 
 In other languages the Doxygen @fn structural indicator is used to document 
-subroutines/functions/methods and the parsing engine figures out what is what. 
-In Perl that is a lot harder to do so I have added a @method and @function 
-structural indicator so that they can be documented seperatly. 
+subroutines/functions/methods and the parsing engine figures out what is what.
+In Perl that is a lot harder to do so I have added a `@method` and `@function`
+structural indicator so that they can be documented separately.
 
 =head2 Supported Structural Indicators
 
