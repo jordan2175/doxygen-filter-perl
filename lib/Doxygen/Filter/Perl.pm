@@ -258,7 +258,7 @@ sub ProcessFile
         # Process states
         if ($self->{'_sState'} eq 'NORMAL')
         {
-            if ($line =~ /^\s*package\s*(.*)\;$/) 
+            if ($line =~ /^\s*package\s*([^;]*)\;/)
             { 
                 #$self->{'_sCurrentClass'} = $1;
                 #push (@{$self->{'_hData'}->{'class'}->{'classorder'}}, $1);
