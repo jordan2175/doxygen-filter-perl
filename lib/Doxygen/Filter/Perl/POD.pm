@@ -117,13 +117,25 @@ sub view_head4
     return "\n\@paragraph $sectionLabel$name$labelCnt $title\n" . $head4->content->present($self);
 }
 
-sub view_seq_code 
+
+sub view_seq_code
 {
     my ($self, $text) = @_;
-    return "\n\@code\n$text\n\@endcode\n";
+    $text =~ s/"/\\"/g;
+    return "<code>$text</code>";
 }
 
 
+sub view_verbatim {
+    my ($self, $text) = @_;
+    for ($text) {
+        s/&/&amp;/g;
+        s/</&lt;/g;
+        s/>/&gt;/g;
+        s/-/\\-/g;
+    }
+    return "<pre>$text</pre>\n\n";
+}
 
 
 =head1 NAME
