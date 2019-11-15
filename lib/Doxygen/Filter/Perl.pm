@@ -18,7 +18,6 @@
 # @endverbatim
 #
 # @copy 2011, Bret Jordan (jordan2175@gmail.com, jordan@open1x.org)
-# $Id: Perl.pm 93 2015-03-17 13:08:02Z jordan2175 $
 #*
 package Doxygen::Filter::Perl;
 
@@ -31,7 +30,7 @@ use Pod::POM;
 use IO::Handle;
 use Doxygen::Filter::Perl::POD;
 
-our $VERSION     = '1.72';
+our $VERSION     = '1.73';
 $VERSION = eval $VERSION;
 
 
