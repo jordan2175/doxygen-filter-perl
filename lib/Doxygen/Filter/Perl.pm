@@ -796,7 +796,7 @@ sub _ProcessPerlMethod
     }
 
     # Doxygen makes use of the `@` symbol and treats it as a special reserved character.  This is a problem for perl
-    # and especially when we are documenting our own Doxygen code we have print statements that include things likea `@endcode`
+    # and especially when we are documenting our own Doxygen code we have print statements that include things like `@endcode`
     # as is found in _PrintMethodBlock(). Lets convert those `@` to `@amp;`
     $line =~ s/\@endcode/\&\#64\;endcode/g;
 
