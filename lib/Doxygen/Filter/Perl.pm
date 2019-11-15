@@ -381,6 +381,8 @@ sub PrintAll
     my $logger = $self->GetLogger($self);
     $logger->debug("### Entering PrintAll ###");
 
+    binmode STDOUT, ":utf8";
+
     $self->_PrintFilenameBlock();
     $self->_PrintIncludesBlock();
     

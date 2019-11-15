@@ -137,6 +137,12 @@ sub view_seq_code
     return "<code>$text</code>";
 }
 
+sub encode {
+    my($self,$text) = @_;
+    return $text;
+}
+
+
 
 sub view_verbatim {
     my ($self, $text) = @_;
