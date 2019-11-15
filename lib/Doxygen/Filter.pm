@@ -34,7 +34,7 @@ $VERSION = eval $VERSION;
 sub GetLogger
 {
     #** @method public GetLogger ($object)
-    # This method is a helper method to get the Log4perl logger object ane make sure
+    # This method is a helper method to get the Log4perl logger object and make sure
     # it knows from which class it was called regardless of where it actually lives.
     #*
     my $self = shift;
