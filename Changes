@@ -1,7 +1,24 @@
 Release Notes:
+v1.73 - 2019-11-15
+    Changes
+        Detection of package name (see (see https://github.com/jordan2175/doxygen-filter-perl/pull/20)
+        Asterisk in prototype (see: https://github.com/jordan2175/doxygen-filter-perl/pull/19)
+        Recognizing subroutine definitions. (see https://github.com/jordan2175/doxygen-filter-perl/pull/18)
+        Don't encode text (see https://github.com/jordan2175/doxygen-filter-perl/pull/17)
+        Remove `\n` from headers (see https://github.com/jordan2175/doxygen-filter-perl/pull/15)
+        Small prototype support (see https://github.com/jordan2175/doxygen-filter-perl/pull/14)
+        Doxygen supports `<code>` (see https://github.com/jordan2175/doxygen-filter-perl/pull/13)
+        Incorrect end of comment detected (see https://github.com/jordan2175/doxygen-filter-perl/pull/12)
+        Make code section XHTML compatible (see https://github.com/jordan2175/doxygen-filter-perl/pull/10)
+        Correcting multiple use of doxygen section labels (see https://github.com/jordan2175/doxygen-filter-perl/pull/9)
+        Uninitialized variable (see https://github.com/jordan2175/doxygen-filter-perl/pull/8)
+        Fix for some uninitialized variables (see https://github.com/jordan2175/doxygen-filter-perl/pull/7)
+        Correct file name in case of space in the name (see https://github.com/jordan2175/doxygen-filter-perl/pull/6)
+        Uninitialized value $sOptions (see https://github.com/jordan2175/doxygen-filter-perl/pull/5)
+        issue #3 "Use of uninitialized value $sMethodName" problem (see https://github.com/jordan2175/doxygen-filter-perl/pull/4)
 v1.72 - 2015-03-23
     Changes
-        Un-did change from 1.71 and fixed it correctly by changing the Doxyfile
+        Fixed license (just in case)
 v1.71 - 2015-03-16
     Chnaged
         Fix issue where public objects were not showing up, if a private objects was found 

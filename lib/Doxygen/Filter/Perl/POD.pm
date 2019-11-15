@@ -18,7 +18,6 @@
 # @endverbatim
 #
 # @copy 2011, Bret Jordan (jordan2175@gmail.com, jordan@open1x.org)
-# $Id: POD.pm 88 2012-07-07 04:27:35Z jordan2175 $
 #*
 package Doxygen::Filter::Perl::POD;
 
@@ -28,7 +27,7 @@ use warnings;
 use parent qw(Pod::POM::View::HTML);
 use Log::Log4perl;
 
-our $VERSION     = '1.72';
+our $VERSION     = '1.73';
 $VERSION = eval $VERSION;
 our $labelCnt = 0;  # label counter to see to it that when e.g. twice a =head1 NAME in a file it is still an unique label
 our $sectionLabel = 'x';
