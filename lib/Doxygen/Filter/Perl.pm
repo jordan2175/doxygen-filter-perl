@@ -29,6 +29,8 @@ use Log::Log4perl;
 use Pod::POM;
 use IO::Handle;
 use Doxygen::Filter::Perl::POD;
+use File::Slurp;
+use PPR;
 
 our $VERSION     = '1.73';
 $VERSION = eval $VERSION;
@@ -95,7 +97,7 @@ sub RESETSUB
     $self->{'_sCurrentMethodState'} = undef;
 }
 
-sub RESETFILE  { shift->{'_aRawFileData'}   = [];    }
+sub RESETFILE  { my $self = shift; $self->{'_aRawFileData'}   = []; $self->{'_aUncommentFileData'}   = [];   }
 
 sub RESETCLASS 
 { 
@@ -165,11 +167,20 @@ sub ReadFile
     $sFilename =~ /^(.*\/)*(.*)$/;
     $self->{'_hData'}->{'filename'}->{'shortname'} = $2;
  
-    open(DATAIN, $sFilename);
-    #my @aFileData = <DATAIN>;
-    my @aFileData = map({ s/\r$//g; $_; } <DATAIN>);
-    close (DATAIN);
-    $self->{'_aRawFileData'} = \@aFileData;
+    my $aFileData = read_file($sFilename);
+    $aFileData =~ s/\r$//g;
+    my @aRawFileData= split /(?<=\n)/, $aFileData;
+    $self->{'_aRawFileData'} = \@aRawFileData;
+    my $aUncommentFileData_tmp = PPR::decomment2(join($", $aFileData));
+    if (defined($PPR::ERROR))
+    {
+      $self->{'_aUncommentFileData'} = \@aRawFileData;
+    }
+    else
+    {
+      my @aUncommentFileData = split /(?<=\n)/, $aUncommentFileData_tmp;
+      $self->{'_aUncommentFileData'} = \@aUncommentFileData;
+    }
 }
 
 sub ReportError
@@ -202,6 +213,7 @@ sub ProcessFile
     $self->{'_hData'}->{'lineno'} = 0;
     foreach my $line (@{$self->{'_aRawFileData'}})
     {
+	my $uncommentLine = $self->{'_aUncommentFileData'}[$self->{'_hData'}->{'lineno'}];
         $self->{'_hData'}->{'lineno'}++;
         # Convert syntax block header to supported doxygen form, if this line is a header
         $line = $self->_ConvertToOfficialDoxygenSyntax($line);
@@ -362,7 +374,7 @@ sub ProcessFile
                 }
             }
         }        
-        elsif ($self->{'_sState'} eq 'METHOD')  { $self->_ProcessPerlMethod($line); }
+        elsif ($self->{'_sState'} eq 'METHOD')  { $self->_ProcessPerlMethod($uncommentLine, $line); }
         elsif ($self->{'_sState'} eq 'DOXYGEN') { push (@{$self->{'_aDoxygenBlock'}}, $line); }
         elsif ($self->{'_sState'} eq 'POD')     { push (@{$self->{'_aPodBlock'}}, $line);}
     }
@@ -534,6 +546,15 @@ sub _PrintFilenameBlock
         print "/** \@file \"$self->{'_hData'}->{'filename'}->{'fullpath'}\"\n";
         if (defined $self->{'_hData'}->{'filename'}->{'details'}) { print "$self->{'_hData'}->{'filename'}->{'details'}\n"; }
         if (defined $self->{'_hData'}->{'filename'}->{'version'}) { print "\@version $self->{'_hData'}->{'filename'}->{'version'}\n"; }
+        if (defined($PPR::ERROR))
+        {
+          print "\n";        
+	  my $opt_offset = 0;
+	  my $line = $PPR::ERROR->line($opt_offset);
+	  my $source = $PPR::ERROR->source();
+          print("Found error in the perl code around line: $line\n");
+	  print("\\verbatim\n$source\n\\endverbatim\n");        
+        }
         print "*/\n";        
     }
 }
@@ -686,15 +707,17 @@ sub _PrintMethodBlock
 
 sub _ProcessPerlMethod
 {
-    #** @method private _ProcessPerlMethod ($line)
+    #** @method private _ProcessPerlMethod ($line, $rawLine)
     # This method will process the contents of a subroutine/function/method and try to figure out
     # the name and whether or not it is a private or public method.  The private or public status,
     # if not defined in a doxygen comment block will be determined based on the file name.  As with
     # C and other languages, an "_" should be the first character for all private functions/methods.
-    # @param line - required string (full line of code)
+    # @param line - required string (full line of code, without comment)
+    # @param rawline - required string (full line of code, with comment i.e. the original line.)
     #*
     my $self = shift;
     my $line = shift;
+    my $rawLine = shift;
     my $logger = $self->GetLogger($self);
     $logger->debug("### Entering _ProcessPerlMethod ###");
     
@@ -739,12 +762,21 @@ sub _ProcessPerlMethod
     # If there are more open then closed, then we are still in a subroutine
     my $cleanline = $line;
     $logger->debug("Cleanline: $cleanline");
+
+    if (defined($PPR::ERROR))
+    {
+      # In case of an eror during the remving of the comments, the old comments / code is restored
+      # so we still have to strip it here and hope for the best. The stripping is not correct as it removes
+      # too much like in `return $function && $function !~ /^[\s{#]/;` which goes tos
+      # `return $function && $function !~ /^[\s{` leaving incorrect statement. This is the best we can do.
+      #
+      # Remove any comments even those inline with code but not if the hash mark "#" is in a pattern match
+      # unless ($cleanline =~ /=~/) { $cleanline =~ s/#.*$//; }
+      # Patch from Stefan Tauner to address hash marks showing up at the last element of an array, $#array
+      unless ($cleanline =~ /=~/) { $cleanline =~ s/([^\$])#.*$/$1/; }
+      $logger->debug("Cleanline: $cleanline");
+    }
     
-    # Remove any comments even those inline with code but not if the hash mark "#" is in a pattern match 
-    # unless ($cleanline =~ /=~/) { $cleanline =~ s/#.*$//; }
-    # Patch from Stefan Tauner to address hash marks showing up at the last element of an array, $#array
-    unless ($cleanline =~ /=~/) { $cleanline =~ s/([^\$])#.*$/$1/; }
-    $logger->debug("Cleanline: $cleanline");
     # Need to remove braces from counting when they are in a pattern match but not when they are supposed to be 
     # there as in the second use case listed below.  Below the use cases is some ideas on how to do this.
     # use case: $a =~ /\{/
@@ -797,10 +829,10 @@ sub _ProcessPerlMethod
     # Doxygen makes use of the `@` symbol and treats it as a special reserved character.  This is a problem for perl
     # and especially when we are documenting our own Doxygen code we have print statements that include things like `@endcode`
     # as is found in _PrintMethodBlock(). Lets convert those `@` to `@amp;`
-    $line =~ s/\@endcode/\&\#64\;endcode/g;
+    $rawLine =~ s/\@endcode/\&\#64\;endcode/g;
 
     # Record the current line for code output
-    $self->{'_hData'}->{'class'}->{$sClassName}->{'subroutines'}->{$sMethodName}->{'code'} .= $line;
+    $self->{'_hData'}->{'class'}->{$sClassName}->{'subroutines'}->{$sMethodName}->{'code'} .= $rawLine;
     $self->{'_hData'}->{'class'}->{$sClassName}->{'subroutines'}->{$sMethodName}->{'length'}++; 
     
     # Only set these values if they were not already set by a comment block outside the subroutine
@@ -1159,6 +1191,91 @@ sub _ConvertParameters
     
     return $sParameters;
 }
+
+# The following code code from PPR:decomment() is adjusted by Hakon Hagland so that also POD parts are also replaces
+# by the appropriate number of newlines
+# see also: https://stackoverflow.com/questions/61307663/retain-newlines-for-pod-in-case-of-ppruncomment/61309570#61309570
+package PPR;
+sub decomment2 {
+    if ($] >= 5.014 && $] < 5.016) { _croak( "PPR::decomment() does not work under Perl 5.14" )}
+
+    my ($str) = @_;
+
+    local %PPR::comment_len;
+
+    # Locate comments...
+    $str =~ m{ \A (?&PerlDocument) \Z
+
+                (?(DEFINE)
+                    (?<decomment>
+                       ( (?<! [\$@%] ) [#] [^\n]*+ )
+                       (?{
+                            my $len = length($^N);
+                            my $pos = pos() - $len;
+                            $PPR::comment_len{$pos} = $len;
+                       })
+                    )
+
+                    (?<PerlOWS>
+                        (?:
+                            \h++
+                        |
+                            (?&PPR_newline_and_heredoc)
+                        |
+                            (?&decomment)
+                        |
+                            __ (?> END | DATA ) __ \b .*+ \z
+                        )*+
+                    ) # End of rule
+
+                    (?<PerlNWS>
+                        (?:
+                            \h++
+                        |
+                            (?&PPR_newline_and_heredoc)
+                        |
+                            (?&decomment)
+                        |
+                            __ (?> END | DATA ) __ \b .*+ \z
+                        )++
+
+                    ) # End of rule
+
+                    (?<PerlPod>
+                        (
+                            ^ = [^\W\d]\w*+
+                            .*?
+                            (?>
+                                ^ = cut \b [^\n]*+ $
+                            |
+                                \z
+                            )
+                        )
+                        (?{
+                            my $len = length($^N);
+                            my $pos = pos() - $len;
+                            $PPR::comment_len{$pos} = $len;
+                        })
+                    ) # End of rule
+
+                    $PPR::GRAMMAR
+                )
+            }xms or return;
+
+    # Replace the comments found by the number of newlines inside the comment...
+    for my $from_pos (_uniq(sort { $b <=> $a } keys %PPR::comment_len)) {
+        my $comment = substr $str, $from_pos, $PPR::comment_len{$from_pos};
+        my $count_newline = $comment =~ tr/\n//;
+        my $replacement = q{};
+        if ( $count_newline) {
+            $replacement = "\n" x $count_newline;
+        }
+        substr($str, $from_pos, $PPR::comment_len{$from_pos}) = $replacement;
+    }
+
+    return $str;
+}
+
 
 =head1 NAME
 
