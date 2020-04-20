@@ -573,7 +573,15 @@ sub _PrintClassBlock
     my $parent = $1;
     my $class = $2 || $sFullClass;
     
-    print "/** \@class $sFullClass\n";
+    my $usedClass = $sFullClass;
+    if ($sFullClass eq "main")
+    {
+      $usedClass = $self->{'_hData'}->{'filename'}->{'shortname'};
+      $usedClass =~ s/\.p[lm]$//;
+      $usedClass =~ s/-/_/g;
+      $usedClass =~ s/^/main_/;
+    }
+    print "/** \@class $usedClass\n";
 
     my $classDef = $self->{'_hData'}->{'class'}->{$sFullClass};
     
@@ -588,7 +596,15 @@ sub _PrintClassBlock
     #if (defined $parent) { print "class $sFullClass : public $parent { \n"; }
     #else { print "class $sFullClass { \n"; }
     print "namespace $parent {\n" if ($parent);
-    print "class $class";
+    if ($sFullClass eq "main")
+    {
+      print "class $usedClass";
+    }
+    else
+    {
+      print "class $class";
+    }
+
     if (@{$classDef->{inherits}})
     {
         my $count = 0;
