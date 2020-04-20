@@ -34,6 +34,7 @@
     Test::More (1.001014)           [License = Perl]
     Test::Output (1.03)             [License = Perl]
     IO::Handle (1.34)
+    File::Slurp
     PPR
 
 ## LICENCE INFORMATION ##
