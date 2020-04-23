@@ -171,15 +171,32 @@ sub ReadFile
     $aFileData =~ s/\r$//g;
     my @aRawFileData= split /(?<=\n)/, $aFileData;
     $self->{'_aRawFileData'} = \@aRawFileData;
-    my $aUncommentFileData_tmp = PPR::decomment2(join($", $aFileData));
-    if (defined($PPR::ERROR))
-    {
+    $self->{'_decommentOK'} = 1;
+    eval {
+      my $aUncommentFileData_tmp = PPR::decomment2(join($", $aFileData));
+      if (defined($PPR::ERROR))
+      {
+        $self->{'_decommentOK'} = 0;
+        $self->{'_aUncommentFileData'} = \@aRawFileData;
+      }
+      else
+      {
+        my @aUncommentFileData;
+        if (defined($aUncommentFileData_tmp))
+        {
+          @aUncommentFileData = split /(?<=\n)/, $aUncommentFileData_tmp;
+          $self->{'_aUncommentFileData'} = \@aUncommentFileData;
+        }
+        else
+        {
+          $self->{'_decommentOK'} = 0;
+          $self->{'_aUncommentFileData'} = \@aRawFileData;
+        }
+      }
+    };
+    if ($@) {
+      $self->{'_decommentOK'} = 0;
       $self->{'_aUncommentFileData'} = \@aRawFileData;
-    }
-    else
-    {
-      my @aUncommentFileData = split /(?<=\n)/, $aUncommentFileData_tmp;
-      $self->{'_aUncommentFileData'} = \@aUncommentFileData;
     }
 }
 
@@ -213,7 +230,7 @@ sub ProcessFile
     $self->{'_hData'}->{'lineno'} = 0;
     foreach my $line (@{$self->{'_aRawFileData'}})
     {
-	my $uncommentLine = $self->{'_aUncommentFileData'}[$self->{'_hData'}->{'lineno'}];
+        my $uncommentLine = $self->{'_aUncommentFileData'}[$self->{'_hData'}->{'lineno'}];
         $self->{'_hData'}->{'lineno'}++;
         # Convert syntax block header to supported doxygen form, if this line is a header
         $line = $self->_ConvertToOfficialDoxygenSyntax($line);
@@ -549,11 +566,18 @@ sub _PrintFilenameBlock
         if (defined($PPR::ERROR))
         {
           print "\n";        
-	  my $opt_offset = 0;
-	  my $line = $PPR::ERROR->line($opt_offset);
-	  my $source = $PPR::ERROR->source();
+          my $opt_offset = 0;
+          my $line = $PPR::ERROR->line($opt_offset);
+          my $source = $PPR::ERROR->source();
           print("Found error in the perl code around line: $line\n");
-	  print("\\verbatim\n$source\n\\endverbatim\n");        
+          print("\\verbatim\n$source\n\\endverbatim\n");        
+        }
+        else
+        {
+          if ($self->{'_decommentOK'} == 0)
+          {
+            print("Found problem in decommenting the perl code\n");
+          }
         }
         print "*/\n";        
     }
@@ -625,7 +649,6 @@ sub _PrintClassBlock
     {
       print "class $class";
     }
-
     if (@{$classDef->{inherits}})
     {
         my $count = 0;
@@ -779,7 +802,7 @@ sub _ProcessPerlMethod
     my $cleanline = $line;
     $logger->debug("Cleanline: $cleanline");
 
-    if (defined($PPR::ERROR))
+    if ($self->{'_decommentOK'} == 0)
     {
       # In case of an eror during the remving of the comments, the old comments / code is restored
       # so we still have to strip it here and hope for the best. The stripping is not correct as it removes
