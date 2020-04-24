@@ -172,8 +172,19 @@ sub ReadFile
     my @aRawFileData= split /(?<=\n)/, $aFileData;
     $self->{'_aRawFileData'} = \@aRawFileData;
     $self->{'_decommentOK'} = 1;
+    my $ppr_version;
+    $ppr_version = eval $PPR::VERSION;
     eval {
-      my $aUncommentFileData_tmp = PPR::decomment2(join($", $aFileData));
+      my $aUncommentFileData_tmp;
+      # comparing floating point numbers is a bit nasty, this will do here
+      if ($ppr_version < 0.0000259)
+      {
+        $aUncommentFileData_tmp = PPR::decomment2(join($", $aFileData));
+      }
+      else
+      {
+        $aUncommentFileData_tmp = PPR::decomment(join($", $aFileData));
+      }
       if (defined($PPR::ERROR))
       {
         $self->{'_decommentOK'} = 0;
