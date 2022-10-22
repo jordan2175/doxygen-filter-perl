@@ -161,7 +161,7 @@ sub ReadFile
     # Replace forward slash with a black slash
     $sFilename =~ s/\\/\//g;
     # Remove windows style drive letters
-    $sFilename =~ s/^.*://;
+    $sFilename =~ s/^.://;
  
     # Lets grab just the file name not the full path for the short name
     $sFilename =~ /^(.*\/)*(.*)$/;
