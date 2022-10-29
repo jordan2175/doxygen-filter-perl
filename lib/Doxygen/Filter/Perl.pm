@@ -667,7 +667,10 @@ sub _PrintClassBlock
         {
             if (defined($inherit))
             {
-                print(($count++ == 0 ? ": " : ", ")." public ::".$inherit);
+                if ($sFullClass ne $inherit)
+                {
+                    print(($count++ == 0 ? ": " : ", ")." public ::".$inherit);
+                }
             }
 
         }
