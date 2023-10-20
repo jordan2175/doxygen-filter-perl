@@ -635,6 +635,8 @@ sub _PrintClassBlock
       $usedClass = $self->{'_hData'}->{'filename'}->{'shortname'};
       $usedClass =~ s/\.p[lm]$//;
       $usedClass =~ s/-/_/g;
+      $usedClass =~ s/\./_/g;
+      $usedClass =~ s/\+/_/g;
       $usedClass =~ s/^/main_/;
     }
     print "/** \@class $usedClass\n";
