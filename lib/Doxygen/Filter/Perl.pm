@@ -636,6 +636,7 @@ sub _PrintClassBlock
       $usedClass =~ s/\.p[lm]$//;
       $usedClass =~ s/-/_/g;
       $usedClass =~ s/\./_/g;
+      $usedClass =~ s/\+/_/g;
       $usedClass =~ s/^/main_/;
     }
     print "/** \@class $usedClass\n";
